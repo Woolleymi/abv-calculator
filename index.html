@@ -47,7 +47,7 @@
             font-weight: bold;
             color: #555;
         }
-        input[type="number"] {
+        input[type="number"], select {
             width: 100%;
             padding: 8px;
             margin-bottom: 15px;
@@ -92,6 +92,21 @@
             text-align: center;
             margin-bottom: 5px;
             color: #555;
+        }
+        #recipeDisplay {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none; /* Hidden until selection */
+        }
+        #recipeDisplay h2 {
+            font-size: 16px;
+            margin-top: 0;
+        }
+        #recipeDisplay ol {
+            padding-left: 20px;
         }
         @media (max-width: 480px) {
             .container {
@@ -140,6 +155,22 @@
             <div class="result-label">Alcohol By Volume:</div>
             <div class="result" id="abvResult">9.19%</div>
         </div>
+
+        <label>
+            Select Alcohol Type:
+            <select id="alcoholType">
+                <option value="">-- Choose --</option>
+                <option value="whiskey">Whiskey</option>
+                <option value="vodka">Vodka</option>
+                <option value="moonshine">Moonshine</option>
+                <option value="rum">Rum</option>
+            </select>
+        </label>
+
+        <div id="recipeDisplay">
+            <h2>Step-by-Step Recipe</h2>
+            <ol id="recipeSteps"></ol>
+        </div>
     </div>
 
     <script>
@@ -157,10 +188,72 @@
             let og = ogInput;
             let fg = fgInput;
 
-            // Handle Plato conversion to SG if selected
             if (unit === 'Plato') {
                 og = platoToSG(og);
                 fg = platoToSG(fg);
             }
 
-            //
+            let abv = (og - fg) * 131.25;
+
+            if (equation === 'alternate') {
+                abv = (og - fg) * 126;
+            }
+
+            abv = Math.round(abv * 100) / 100;
+            document.getElementById('abvResult').textContent = abv + '%';
+        }
+
+        function platoToSG(plato) {
+            return 1 + (plato / (258.6 - (plato * 227.1 / 258.6)));
+        }
+
+        // Recipe data
+        const recipes = {
+            whiskey: [
+                'Prepare mash: Mix 6 lbs corn, 2 lbs rye, 2 lbs malted barley, and 5 gallons water. Heat to 165°F, add enzymes if needed, hold for 60-90 min.',
+                'Cool mash to 70-80°F, pitch yeast, ferment for 5-7 days until SG stabilizes around 1.000.',
+                'Strain solids, distill in pot still: Collect foreshots (discard), heads, hearts (target 60-80% ABV), tails.',
+                'Age hearts in oak barrel or with oak chips for 6+ months for flavor development.',
+                'Dilute to 40-50% ABV, bottle. Ensure legal compliance.'
+            ],
+            vodka: [
+                'Prepare wash: Mix 10 lbs sugar, 5 gallons water, turbo yeast. Ferment at 70-80°F for 3-5 days until dry.',
+                'Distill multiple times in column still for neutrality, aiming for 95%+ ABV.',
+                'Filter through activated carbon to remove impurities.',
+                'Dilute to 40% ABV with distilled water.',
+                'Bottle as neutral spirit. Check local laws.'
+            ],
+            moonshine: [
+                'Make corn mash: 8.5 lbs cracked corn, 5 lbs sugar, amylase enzymes, 5 gallons water. Heat to convert starches, cool.',
+                'Ferment with distiller’s yeast for 7-10 days until bubbling stops.',
+                'Distill in pot still with thumper: Run stripping run, then spirit run, collect hearts at high proof.',
+                'Optionally infuse with fruits like apple for flavored versions.',
+                'Dilute if needed, store in jars. Home distillation may be illegal.'
+            ],
+            rum: [
+                'Prepare molasses wash: Mix 6 lbs molasses, 4 lbs sugar, 5 gallons water, rum yeast. Ferment 7-14 days.',
+                'Distill in pot still twice: First to low wines (20-40% ABV), second to hearts (60-80% ABV).',
+                'Infuse with spices: Add vanilla, cinnamon, nutmeg; steep for 1-2 weeks.',
+                'Age in oak for caramel notes, dilute to 40-50% ABV.',
+                'Bottle spiced rum. Adhere to regulations.'
+            ]
+        };
+
+        // Event listener for dropdown
+        document.getElementById('alcoholType').addEventListener('change', function() {
+            const selected = this.value;
+            const display = document.getElementById('recipeDisplay');
+            const steps = document.getElementById('recipeSteps');
+
+            if (selected && recipes[selected]) {
+                steps.innerHTML = recipes[selected].map(step => `<li>${step}</li>`).join('');
+                display.style.display = 'block';
+            } else {
+                display.style.display = 'none';
+            }
+        });
+
+        calculateABV();
+    </script>
+</body>
+</html>
