@@ -7,9 +7,10 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5dc; /* Beige like logo background */
-            background-image: url('logo.png'); /* Uncomment if you upload logo.png; otherwise, uses solid beige */
-            /* background-size: cover; background-position: center; */ /* Uncomment for full-cover logo bg */
+            background-color: #f5f5dc; /* Beige fallback */
+            background-image: url('logo.png');
+            background-size: cover; /* Ensures logo covers the area */
+            background-position: center; /* Centers the logo */
             background-repeat: no-repeat;
             background-attachment: fixed;
             margin: 0;
@@ -20,7 +21,7 @@
             min-height: 100vh;
         }
         .container {
-            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white for readability over bg */
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white for readability */
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -30,12 +31,11 @@
         .logo-header {
             text-align: center;
             margin-bottom: 20px;
-            font-family: 'Georgia', serif; /* Serif for vintage distillery feel */
+            font-family: 'Georgia', serif;
             font-size: 24px;
             font-weight: bold;
-            color: #8B4513; /* Tobacco brown */
+            color: #8B4513;
         }
-        /* If you want logo as img instead: <img src="logo.png" alt="Tobacco Road Distillers Logo" style="width:100%; height:auto; margin-bottom:10px;"> */
         h1 {
             font-size: 18px;
             margin: 0 0 20px 0;
@@ -86,7 +86,7 @@
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            color: #28a745; /* Green like in screenshot */
+            color: #28a745;
         }
         .result-label {
             text-align: center;
@@ -163,26 +163,4 @@
                 fg = platoToSG(fg);
             }
 
-            // Standard equation
-            let abv = (og - fg) * 131.25;
-
-            // For alternate: A simple variation, e.g., * 126 (less accurate for high gravity)
-            if (equation === 'alternate') {
-                abv = (og - fg) * 126;
-            }
-
-            // Round to 2 decimals
-            abv = Math.round(abv * 100) / 100;
-            document.getElementById('abvResult').textContent = abv + '%';
-        }
-
-        // Plato to SG conversion (approximate formula)
-        function platoToSG(plato) {
-            return 1 + (plato / (258.6 - (plato * 227.1 / 258.6)));
-        }
-
-        // Initial calculation
-        calculateABV();
-    </script>
-</body>
-</html>
+            //
