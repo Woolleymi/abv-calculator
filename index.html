@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,6 +109,19 @@
         #recipeDisplay ol {
             padding-left: 20px;
         }
+        #recipeDisplay table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        #recipeDisplay th, #recipeDisplay td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        #recipeDisplay th {
+            background-color: #f2f2f2;
+        }
         @media (max-width: 480px) {
             .container {
                 padding: 20px;
@@ -163,14 +177,15 @@
                 <option value="whiskey">Whiskey</option>
                 <option value="vodka">Vodka</option>
                 <option value="moonshine">Moonshine</option>
-                <option value="Applepie">Applepie</option>
                 <option value="rum">Rum</option>
+                <option value="smoothBourbon">Smooth Bourbon-Style Whiskey</option>
+                <option value="sweetMolassesRye">Sweet Molasses-Infused Rye Whiskey</option>
             </select>
         </label>
 
         <div id="recipeDisplay">
             <h2>Step-by-Step Recipe</h2>
-            <ol id="recipeSteps"></ol>
+            <div id="recipeContent"></div>
         </div>
     </div>
 
@@ -231,39 +246,66 @@
                 'Optionally infuse with fruits like apple for flavored versions.',
                 'Dilute if needed, store in jars. Home distillation may be illegal.'
             ],
-             Applepie: [
-                '64 ounces apple cider, 3 cups sugar', 
-                '14 cinnamon sticks, divided',
-                '1/2 teaspoon ground nutmeg,',
-                '1/2 teaspoon ground cinnamon',
-                '750 ml 190 proof grain alcohol', 
-                '1. In a large stock pot, bring the apple juice, cider, sugar, nutmeg, ground cinnamon and 8 cinnamon sticks to a boil.',
-                '2 Cover and simmer for 1 hour.',
-                '3 Remove from heat and let cool to room temperature',
-                '4	Add alcohol to mixture. **CAUTION ** Do not add alcohol near a flame or heat source. It is highly flammable. Make sure mixture is completely cooled before adding alcohol.',
-                '1	Strain the cinnamon sticks out of the mixture.',
-                '2	Pour moonshine into clean glass jars with tight fitting lids.',
-                '3	Using the remaining cinnamon sticks, place one to two sticks (depending on your taste) in each jar. You may need to add more cinnamon sticks.',
-                '1	Place lids on jars and seal tightly.',
-                'Allow to sit in a cool, dry place for 4-8 weeks before enjoying.',
-            ],
             rum: [
                 'Prepare molasses wash: Mix 6 lbs molasses, 4 lbs sugar, 5 gallons water, rum yeast. Ferment 7-14 days.',
                 'Distill in pot still twice: First to low wines (20-40% ABV), second to hearts (60-80% ABV).',
                 'Infuse with spices: Add vanilla, cinnamon, nutmeg; steep for 1-2 weeks.',
                 'Age in oak for caramel notes, dilute to 40-50% ABV.',
                 'Bottle spiced rum. Adhere to regulations.'
-            ]
+            ],
+            smoothBourbon: `
+                <p>This recipe draws from traditional corn whiskey mashes but incorporates your caramel 20 malt for added sweetness and body, making it exceptionally smooth for sipping neat or over ice. The high corn content provides a mellow, vanilla-forward profile, while a touch of rye malt adds subtle spice without overpowering smoothness. It's scaled for about 10 gallons of wash, suitable for your 13.2-gallon still. Expected ABV after distillation: 40-50% (dilute to taste post-distillation). Fermentation time: 7-14 days. Aging suggestion: Rest in glass jars with toasted oak chips (2-4 oz, available at homebrew stores) for 1-3 months for oaky smoothness.</p>
+                <h3>Ingredients (Mash Bill: ~70% Corn, 20% Barley Malt, 5% Caramel Malt, 5% Rye Malt)</h3>
+                <table>
+                    <tr><th>Ingredient</th><th>Quantity</th><th>Notes</th></tr>
+                    <tr><td>Cracked/cut corn</td><td>10 lbs</td><td>Your supply; provides base sweetness.</td></tr>
+                    <tr><td>Two-row barley malt</td><td>3 lbs</td><td>Crushed; for enzymes to convert starches.</td></tr>
+                    <tr><td>Caramel 20 two-row barley malt</td><td>1 lb</td><td>Crushed; adds caramel notes for smoothness.</td></tr>
+                    <tr><td>Rye malt</td><td>1 lb</td><td>Crushed; minimal for gentle spice.</td></tr>
+                    <tr><td>Granular sugar</td><td>8-10 lbs (optional)</td><td>Boosts ABV and fermentability; use less for more grain character.</td></tr>
+                    <tr><td>Water</td><td>7 gallons (start with 5 gal hot)</td><td>Filtered or spring; total volume ~10 gal post-mash.</td></tr>
+                    <tr><td>Distiller's yeast</td><td>1 packet (e.g., Turbo or whiskey yeast)</td><td>High-alcohol tolerant; pitch per package.</td></tr>
+                </table>
+                <h3>Step-by-Step Process</h3>
+                <ol>
+                    <li><strong>Mashing (3-4 hours):</strong> In a large pot or mash tun, heat 5 gallons of water to 165°F. Stir in the cracked corn and maintain 160°F for 30-45 minutes, stirring occasionally to prevent scorching (this gelatinizes the corn starches). Cool to 152°F (add cool water if needed), then stir in the crushed barley malt, caramel malt, and rye malt. Hold at 148-152°F for 90 minutes, stirring every 15 minutes. This allows enzymes to convert starches to sugars. Test conversion with iodine (tincture of iodine; if no blue color on a sample, it's ready). Cool to 70°F by adding remaining 2 gallons water and an immersion chiller if available.</li>
+                    <li><strong>Fermentation (7-14 days):</strong> Transfer to a fermenter (food-grade bucket or carboy). If using sugar, dissolve it fully in warm mash water first. Aerate by stirring vigorously or pouring between vessels. Pitch yeast at 70°F. Seal with airlock and ferment at 65-75°F. Monitor with hydrometer: Start at ~1.060-1.080 OG; done at <1.010 FG (bubbles stop). Rack off sediment after 1 week settling.</li>
+                    <li><strong>Distillation:</strong> Siphon clear wash into your still, leaving sediment behind (yields ~8-9 gal). For the thump keg, fill halfway with water or a portion of your stripping run (low wines) to enhance flavor during the second pass. Run a stripping run first (fast, collect everything over 80% ABV foreshots/cut to 20% tails). Then do a spirit run (slower, collect hearts at 140-160 proof, discard first 5-10% heads and last 20% tails). Use thumper for the spirit run to boost proof and smoothness.</li>
+                    <li><strong>Finishing:</strong> Dilute to 100-125 proof with distilled water. Age with oak chips in a glass jar (1 oz per gallon) for 1-3 months, tasting weekly. Filter through coffee filters if cloudy. For mixing with cola, keep at 80-90 proof.</li>
+                </ol>
+                <p>This yields a sweet, corn-driven whiskey with toasty caramel undertones—perfect for a smooth sipper.</p>
+            `,
+            sweetMolassesRye: `
+                <p>For a slightly spicier but still approachable whiskey, this variation uses more rye malt for rye whiskey character while your molasses adds a rich, dark sweetness that balances the spice, making it great mixed with cola (the molasses echoes rum notes). It's smoother than traditional rye due to corn and sugar buffering the rye's edge. Scaled for ~10 gallons wash. Expected ABV: 45-55%. Fermentation: 7-10 days. Aging: Optional 2-4 weeks with oak staves (4-6 small oak staves) for mellowing.</p>
+                <h3>Ingredients (Mash Bill: ~50% Corn, 30% Rye Malt, 15% Barley Malt, 5% Molasses)</h3>
+                <table>
+                    <tr><th>Ingredient</th><th>Quantity</th><th>Notes</th></tr>
+                    <tr><td>Cracked/cut corn</td><td>6 lbs</td><td>Base for smoothness.</td></tr>
+                    <tr><td>Rye malt</td><td>4 lbs</td><td>Crushed; for spicy rye backbone.</td></tr>
+                    <tr><td>Two-row barley malt</td><td>2 lbs</td><td>Crushed; enzymes and body.</td></tr>
+                    <tr><td>Molasses</td><td>2 lbs (or ~3 cups)</td><td>Your supply; unsulfured for best flavor—adds depth.</td></tr>
+                    <tr><td>Granular sugar</td><td>10 lbs</td><td>For high fermentability and ABV.</td></tr>
+                    <tr><td>Water</td><td>8 gallons (start with 5 gal hot)</td><td>Total ~10 gal post-mash.</td></tr>
+                    <tr><td>Distiller's yeast</td><td>1 packet</td><td>As above; rye-tolerant strains preferred.</td></tr>
+                </table>
+                <h3>Step-by-Step Process</h3>
+                <ol>
+                    <li><strong>Mashing (2-3 hours):</strong> Heat 5 gallons water to 165°F in your pot. Add cracked corn and rye malt, hold at 160°F for 30 minutes, stirring to gelatinize. Cool to 152°F, stir in crushed barley malt. Maintain 148-152°F for 60-90 minutes, stirring periodically. In the last 15 minutes, stir in molasses and sugar until dissolved (molasses adds fermentables without needing extra enzymes). Cool to 70°F with remaining 3 gallons water.</li>
+                    <li><strong>Fermentation (7-10 days):</strong> Transfer to fermenter and aerate well (rye can be sticky—stir extra). Pitch yeast at 68-72°F. Ferment at 70°F with airlock. OG ~1.070-1.090; FG <1.005. The molasses will give a darker color and faster ferment. Settle 3-5 days post-ferment, then rack.</li>
+                    <li><strong>Distillation:</strong> Siphon ~9 gal wash into still. For thump keg, use plain water initially for the stripping run (collect to 20% ABV), then low wines for the spirit run to infuse rye/molasses flavors. Stripping: Fast heat, one pass. Spirit: Slow, cut heads (first 150ml), collect hearts (clear, smooth cuts at 60-80% ABV), discard tails. Thumper enhances the sweet-spicy notes.</li>
+                    <li><strong>Finishing:</strong> Dilute to 90-110 proof. Age with oak staves in bottles (1 stave per 2 gal) for 2-4 weeks, shaking occasionally. The molasses lends a cola-friendly sweetness—mix 1:3 with cola over ice.</li>
+                </ol>
+            `
         };
 
         // Event listener for dropdown
         document.getElementById('alcoholType').addEventListener('change', function() {
             const selected = this.value;
             const display = document.getElementById('recipeDisplay');
-            const steps = document.getElementById('recipeSteps');
+            const content = document.getElementById('recipeContent');
 
             if (selected && recipes[selected]) {
-                steps.innerHTML = recipes[selected].map(step => `<li>${step}</li>`).join('');
+                content.innerHTML = recipes[selected];
                 display.style.display = 'block';
             } else {
                 display.style.display = 'none';
@@ -274,3 +316,4 @@
     </script>
 </body>
 </html>
+```
