@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tobacco Road Distillers - ABV Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5dc; /* Beige like logo background */
+            background-image: url('logo.png'); /* Uncomment if you upload logo.png; otherwise, uses solid beige */
+            /* background-size: cover; background-position: center; */ /* Uncomment for full-cover logo bg */
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white for readability over bg */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        .logo-header {
+            text-align: center;
+            margin-bottom: 20px;
+            font-family: 'Georgia', serif; /* Serif for vintage distillery feel */
+            font-size: 24px;
+            font-weight: bold;
+            color: #8B4513; /* Tobacco brown */
+        }
+        /* If you want logo as img instead: <img src="logo.png" alt="Tobacco Road Distillers Logo" style="width:100%; height:auto; margin-bottom:10px;"> */
+        h1 {
+            font-size: 18px;
+            margin: 0 0 20px 0;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .radio-group {
+            margin-bottom: 15px;
+        }
+        .radio-group label {
+            display: inline-block;
+            margin-right: 15px;
+            font-weight: normal;
+            margin-bottom: 0;
+        }
+        .radio-group input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        button {
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background-color: #bbb;
+        }
+        .result {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #28a745; /* Green like in screenshot */
+        }
+        .result-label {
+            text-align: center;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            .logo-header {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-header">Tobacco Road Distillers</div>
+        <h1>Alcohol By Volume Calculator:</h1>
+        
+        <label>
+            Gravity Unit:
+            <div class="radio-group">
+                <label><input type="radio" name="gravityUnit" value="SG" checked> SG (1.xxx)</label>
+                <label><input type="radio" name="gravityUnit" value="Plato"> Plato °P</label>
+            </div>
+        </label>
+        
+        <label>
+            Original Gravity (OG):
+            <input type="number" id="og" value="1.070" step="0.001" min="0.990" max="1.200">
+        </label>
+        
+        <label>
+            Final Gravity (FG):
+            <input type="number" id="fg" value="1.000" step="0.001" min="0.990" max="1.200">
+        </label>
+        
+        <label>
+            Equation:
+            <div class="radio-group">
+                <label><input type="radio" name="equation" value="standard" checked> Standard</label>
+                <label><input type="radio" name="equation" value="alternate"> Alternate (see below for more information)</label>
+            </div>
+        </label>
+        
+        <button onclick="calculateABV()">UPDATE</button>
+        
+        <div>
+            <div class="result-label">Alcohol By Volume:</div>
+            <div class="result" id="abvResult">9.19%</div>
+        </div>
+    </div>
+
+    <script>
+        function calculateABV() {
+            const ogInput = parseFloat(document.getElementById('og').value);
+            const fgInput = parseFloat(document.getElementById('fg').value);
+            const unit = document.querySelector('input[name="gravityUnit"]:checked').value;
+            const equation = document.querySelector('input[name="equation"]:checked').value;
+
+            if (isNaN(ogInput) || isNaN(fgInput) || ogInput <= fgInput) {
+                document.getElementById('abvResult').textContent = 'Invalid input';
+                return;
+            }
+
+            let og = ogInput;
+            let fg = fgInput;
+
+            // Handle Plato conversion to SG if selected
+            if (unit === 'Plato') {
+                og = platoToSG(og);
+                fg = platoToSG(fg);
+            }
+
+            // Standard equation
+            let abv = (og - fg) * 131.25;
+
+            // For alternate: A simple variation, e.g., * 126 (less accurate for high gravity)
+            if (equation === 'alternate') {
+                abv = (og - fg) * 126;
+            }
+
+            // Round to 2 decimals
+            abv = Math.round(abv * 100) / 100;
+            document.getElementById('abvResult').textContent = abv + '%';
+        }
+
+        // Plato to SG conversion (approximate formula)
+        function platoToSG(plato) {
+            return 1 + (plato / (258.6 - (plato * 227.1 / 258.6)));
+        }
+
+        // Initial calculation
+        calculateABV();
+    </script>
+</body>
+</html>
