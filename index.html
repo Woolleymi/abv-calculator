@@ -48,7 +48,7 @@
             font-weight: bold;
             color: #555;
         }
-        input[type="number"], select {
+        input[type="number"], input[type="text"], select {
             width: 100%;
             padding: 8px;
             margin-bottom: 15px;
@@ -122,12 +122,59 @@
         #recipeDisplay th {
             background-color: #f2f2f2;
         }
+        #mashBillCalculator {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        #grainsContainer {
+            margin-bottom: 15px;
+        }
+        .grain-entry {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .grain-entry input {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .grain-entry input:last-child {
+            margin-right: 0;
+        }
+        #mashBillResult {
+            margin-top: 15px;
+        }
+        #mashBillResult table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #mashBillResult th, #mashBillResult td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        #mashBillResult th {
+            background-color: #f2f2f2;
+        }
+        .error {
+            color: red;
+            margin-top: 5px;
+        }
         @media (max-width: 480px) {
             .container {
                 padding: 20px;
             }
             .logo-header {
                 font-size: 20px;
+            }
+            .grain-entry {
+                flex-direction: column;
+            }
+            .grain-entry input {
+                margin-right: 0;
+                margin-bottom: 5px;
             }
         }
     </style>
@@ -178,7 +225,6 @@
                 <option value="vodka">Vodka</option>
                 <option value="moonshine">Moonshine</option>
                 <option value="rum">Rum</option>
-                <option value="Applepie">Applepie</option>
                 <option value="smoothBourbon">Smooth Bourbon-Style Whiskey</option>
                 <option value="sweetMolassesRye">Sweet Molasses-Infused Rye Whiskey</option>
             </select>
@@ -187,6 +233,20 @@
         <div id="recipeDisplay">
             <h2>Step-by-Step Recipe</h2>
             <div id="recipeContent"></div>
+        </div>
+
+        <!-- New Mash Bill Calculator Section -->
+        <div id="mashBillCalculator">
+            <h1>Mash Bill Calculator:</h1>
+            <label>
+                Total Mash Weight (lbs):
+                <input type="number" id="totalWeight" value="15" min="1" step="0.1">
+            </label>
+            <div id="grainsContainer"></div>
+            <button onclick="addGrainEntry()">Add Grain</button>
+            <button onclick="calculateMashBill()">Calculate</button>
+            <div id="mashBillResult"></div>
+            <div id="mashError" class="error"></div>
         </div>
     </div>
 
@@ -224,7 +284,7 @@
             return 1 + (plato / (258.6 - (plato * 227.1 / 258.6)));
         }
 
-        // Recipe data
+        // Recipe data (unchanged)
         const recipes = {
             whiskey: [
                 'Prepare mash: Mix 6 lbs corn, 2 lbs rye, 2 lbs malted barley, and 5 gallons water. Heat to 165°F, add enzymes if needed, hold for 60-90 min.',
@@ -253,22 +313,6 @@
                 'Infuse with spices: Add vanilla, cinnamon, nutmeg; steep for 1-2 weeks.',
                 'Age in oak for caramel notes, dilute to 40-50% ABV.',
                 'Bottle spiced rum. Adhere to regulations.'
-            ],
-            Applepie: [
-                '64 ounces apple cider, 3 cups sugar', 
-                '14 cinnamon sticks, divided',
-                '1/2 teaspoon ground nutmeg,',
-                '1/2 teaspoon ground cinnamon',
-                '750 ml 190 proof grain alcohol', 
-                '1. In a large stock pot, bring the apple juice, cider, sugar, nutmeg, ground cinnamon and 8 cinnamon sticks to a boil.',
-                '2 Cover and simmer for 1 hour.',
-                '3 Remove from heat and let cool to room temperature',
-                '4	Add alcohol to mixture. **CAUTION ** Do not add alcohol near a flame or heat source. It is highly flammable. Make sure mixture is completely cooled before adding alcohol.',
-                '1	Strain the cinnamon sticks out of the mixture.',
-                '2	Pour moonshine into clean glass jars with tight fitting lids.',
-                '3	Using the remaining cinnamon sticks, place one to two sticks (depending on your taste) in each jar. You may need to add more cinnamon sticks.',
-                '1	Place lids on jars and seal tightly.',
-                'Allow to sit in a cool, dry place for 4-8 weeks before enjoying.',
             ],
             smoothBourbon: `
                 <p>This recipe draws from traditional corn whiskey mashes but incorporates your caramel 20 malt for added sweetness and body, making it exceptionally smooth for sipping neat or over ice. The high corn content provides a mellow, vanilla-forward profile, while a touch of rye malt adds subtle spice without overpowering smoothness. It's scaled for about 10 gallons of wash, suitable for your 13.2-gallon still. Expected ABV after distillation: 40-50% (dilute to taste post-distillation). Fermentation time: 7-14 days. Aging suggestion: Rest in glass jars with toasted oak chips (2-4 oz, available at homebrew stores) for 1-3 months for oaky smoothness.</p>
@@ -315,7 +359,7 @@
             `
         };
 
-        // Event listener for dropdown
+        // Event listener for dropdown (unchanged)
         document.getElementById('alcoholType').addEventListener('change', function() {
             const selected = this.value;
             const display = document.getElementById('recipeDisplay');
@@ -328,6 +372,69 @@
                 display.style.display = 'none';
             }
         });
+
+        // Mash Bill Calculator Functions
+        let grainCount = 0;
+
+        function addGrainEntry() {
+            grainCount++;
+            const container = document.getElementById('grainsContainer');
+            const entry = document.createElement('div');
+            entry.className = 'grain-entry';
+            entry.innerHTML = `
+                <input type="text" placeholder="Grain Name (e.g., Corn)" id="grainName${grainCount}">
+                <input type="number" placeholder="Percentage (%)" id="grainPercent${grainCount}" min="0" max="100" step="0.1">
+            `;
+            container.appendChild(entry);
+        }
+
+        function calculateMashBill() {
+            const totalWeight = parseFloat(document.getElementById('totalWeight').value);
+            const resultDiv = document.getElementById('mashBillResult');
+            const errorDiv = document.getElementById('mashError');
+            resultDiv.innerHTML = '';
+            errorDiv.textContent = '';
+
+            if (isNaN(totalWeight) || totalWeight <= 0) {
+                errorDiv.textContent = 'Invalid total weight.';
+                return;
+            }
+
+            let totalPercent = 0;
+            const grains = [];
+
+            for (let i = 1; i <= grainCount; i++) {
+                const name = document.getElementById(`grainName${i}`).value.trim();
+                const percent = parseFloat(document.getElementById(`grainPercent${i}`).value);
+
+                if (name && !isNaN(percent) && percent > 0) {
+                    totalPercent += percent;
+                    grains.push({ name, percent });
+                }
+            }
+
+            if (grains.length === 0) {
+                errorDiv.textContent = 'Add at least one grain.';
+                return;
+            }
+
+            if (Math.abs(totalPercent - 100) > 0.01) { // Allow small floating point errors
+                errorDiv.textContent = `Percentages sum to ${totalPercent.toFixed(2)}%. Must be 100%.`;
+                return;
+            }
+
+            let table = '<table><tr><th>Grain</th><th>Quantity (lbs)</th></tr>';
+            grains.forEach(grain => {
+                const quantity = (grain.percent / 100 * totalWeight).toFixed(2);
+                table += `<tr><td>${grain.name}</td><td>${quantity}</td></tr>`;
+            });
+            table += '</table>';
+
+            resultDiv.innerHTML = table;
+        }
+
+        // Add initial grain entry
+        addGrainEntry();
 
         calculateABV();
     </script>
